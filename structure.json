@@ -1,0 +1,32 @@
+{
+    "folders": [{
+            "name": "projects"
+        },
+        {
+            "name": "first_semester",
+            "folders": [{
+                    "name": "inf-1100"
+                },
+                {
+                    "name": "mat-1000"
+                },
+                {
+                    "name": "mat-1005"
+                }
+            ]
+        },
+        {
+            "name": "second_semester",
+            "folders": [{
+                    "name": "inf-1101"
+                },
+                {
+                    "name": "mat-1400"
+                },
+                {
+                    "name": "sta-1000"
+                }
+            ]
+        }
+    ]
+}
