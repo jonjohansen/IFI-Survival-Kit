@@ -62,7 +62,7 @@ def parseArgs():
         print("%sPlease enter your Github username:" % (textColor.purple), end='')
         # Check if there was a configUsername, if so supply it as arg
         if (configUsername != ""):
-            print("%s (default '%s')%s" % (textColor.green, configUsername, textColor.reset))
+            print("%s (defaulting to: '%s')%s" % (textColor.green, configUsername, textColor.reset))
         else:
             print("%s (no default found)%s" % (textColor.blue, textColor.reset))
         inputUsername = input()
@@ -101,4 +101,5 @@ if __name__ == "__main__":
         #main()
     except Exception as error:
         print(error)
-
+    
+    #os.remove('script.py')
