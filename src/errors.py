@@ -1,18 +1,25 @@
 from .textcolor import TextColor
 from .emojis import Emojis
 
-class NoTokenError(Exception):
+class CustomException():
     def __init__(self):
-        textColor = TextColor()
-        emoji = Emojis()
-        message =   ("\n%s%s ERROR: No token was supplied or was not found in the config%s\n\n") % (emoji.alert, textColor.red, emoji.alert)
+        self.textColor = TextColor()
+        self.emoji = Emojis()
+class NoTokenError(Exception, CustomException):
+    def __init__(self):
+        CustomException.__init__(self)
+        message =   ("\n%s%s ERROR: No token was supplied or was not found in the config%s\n\n") % (self.emoji.alert, self.textColor.red, self.emoji.alert)
         link = ("%sTo find out how to generate a token you can visit\n"
-        "https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line %s") % (textColor.green, emoji.link)
+        "https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line %s") % (self.textColor.green, self.emoji.link)
         super().__init__(message + link)
 
-class NoUsernameError(Exception):
+class NoUsernameError(Exception, CustomException):
     def __init__(self):
-        textColor = TextColor()
-        emoji = Emojis()
-        message = "\n%s%s ERROR: No username was supplied, or was not found in the config%s" % (emoji.alert, textColor.red, emoji.alert)
+        message = "\n%s%s ERROR: No username was supplied, or was not found in the config%s" % (self.emoji.alert, self.textColor.red, self.emoji.alert)
+        super().__init__(message)
+
+class NoPackageError(Exception, CustomException):
+    def __init__(self, package):
+        CustomException.__init__(self)
+        message = ("\n%s%s ERROR: The script cannot continue without installing the following package(s): %s%s %s.") % (self.emoji.alert, self.textColor.red, self.textColor.purple, package, self.emoji.alert)
         super().__init__(message)

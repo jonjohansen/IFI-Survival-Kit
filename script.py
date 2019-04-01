@@ -1,10 +1,10 @@
 #!/usr/local/bin/python3
-
 import json
 import os
 import argparse
 import subprocess
-from src import TextColor, NoTokenError, NoUsernameError
+from pip._internal import main as pipmain
+from src import Emojis, TextColor, NoTokenError, NoUsernameError, NoPackageError
 
 def main():
     fileConfig = readConfig()
@@ -92,14 +92,26 @@ def parseArgs():
 
     return username, token
 
-if __name__ == "__main__":
-    
-    textColor = TextColor()
+def import_or_install(package):
     try:
+        __import__(package)
+    except ImportError:
+        print(("%s %sPackage %s%s %sis missing Do you want to install it through pip?") % (emoji.package, textColor.blue, textColor.purple, package, textColor.blue), end="")
+        res = input(("%s (y/n) ") % (textColor.green))
+
+        if (res == "y" or res == "Y"):
+            pipmain(['install', package])
+        else:
+            raise NoPackageError(package)
+
+if __name__ == "__main__":
+    try:
+        emoji = Emojis()
+        textColor = TextColor()
+        import_or_install('requests')
         username, token = parseArgs()
         #print("%s %s" % (username, token))
         #main()
     except Exception as error:
         print(error)
-    
     #os.remove('script.py')
