@@ -16,13 +16,14 @@ def parseArgs(textColor):
     '''
 
     parser = argparse.ArgumentParser(description=desc, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('-u', '--username', metavar="STR", type=str, help='Github username')
-    parser.add_argument('-t','--token', metavar="NUM", type=int, help='Personal access token')
-    parser.add_argument('-v', '--verbose', help="increase output verbosity", action="store_true")
+    parser.add_argument('-u', '--username', metavar="<username>", type=str, help='Github username')
+    parser.add_argument('-t','--token', metavar="<token>", type=int, help='Personal access token')
+    parser.add_argument('-c','--config', metavar="<PATH>", type=str, default='structure.json', help='JSON file describing folder structure')
+
     args = parser.parse_args()
     
     if not args.username or args.token:
-        print("%sSome parameters was omitted.%s\nChecking global git config for defaults...%s" % (textColor.red, textColor.blue, textColor.blue))
+        print("%s\nSome parameters was omitted.%s\nChecking global git config for defaults...%s" % (textColor.red, textColor.blue, textColor.blue))
         configUsername = subprocess.Popen("git config --global user.name", shell=True, stdout=subprocess.PIPE).stdout.read().decode('utf-8').strip("\n")
         configToken = subprocess.Popen("git config --global user.token", shell=True, stdout=subprocess.PIPE).stdout.read().decode('utf-8').strip("\n")
     
@@ -51,7 +52,7 @@ def parseArgs(textColor):
         else:
             print("%s (no default found)%s" % (textColor.blue, textColor.reset))
         inputToken = input()
-        if (inputUsername == ""):
+        if (inputToken == ""):
             if (configToken == ""):
                 raise NoTokenError
             else:
@@ -59,13 +60,16 @@ def parseArgs(textColor):
         else:
             token = inputToken
 
-    return username, token
+    return username, token, args.config
 
 def import_or_install(package, textColor, emoji):
+    ''' Tries to import a package. If package is not found it prompts the user to install it through pip'''
     try:
         __import__(package)
     except ImportError:
-        print(("%s %sPackage %s%s %sis missing Do you want to install it through pip?") % (emoji.package, textColor.blue, textColor.purple, package, textColor.blue), end="")
+        print(("%s %sPip package %s%s %sis missing") % (emoji.package, textColor.blue, textColor.purple, package, textColor.blue))
+        print(("%sYou can uninstall this afterwards with %s'pip uninstall %s'") % (textColor.blue, textColor.yellow, package) )
+        print(("%sDo you want to install it") % (textColor.blue), end="")
         res = input(("%s (y/n) ") % (textColor.green))
 
         if (res == "y" or res == "Y"):

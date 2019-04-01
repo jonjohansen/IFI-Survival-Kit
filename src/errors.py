@@ -23,3 +23,9 @@ class NoPackageError(Exception, CustomException):
         CustomException.__init__(self)
         message = ("\n%s%s ERROR: The script cannot continue without installing the following package(s): %s%s %s.") % (self.emoji.alert, self.textColor.red, self.textColor.purple, package, self.emoji.alert)
         super().__init__(message)
+
+class NoSuchFileError(Exception, CustomException):
+    def __init__(self, file):
+        CustomException.__init__(self)
+        message = ("\n%s%s ERROR: Woops! Could not find file: %s%s %s.") % (self.emoji.alert, self.textColor.red, self.textColor.purple, file, self.emoji.alert)
+        super().__init__(message)

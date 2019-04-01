@@ -5,3 +5,4 @@ class Emojis:
         self.alert = "\U0001F6A8"
         self.ghost = "\U0001F47B"
         self.package = "\U0001F4E6"
+        self.folder = "\U0001F5C2"

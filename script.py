@@ -1,18 +1,25 @@
 #!/usr/local/bin/python3
 import json
 import os
-from src import Emojis, TextColor, parseArgs, import_or_install
+from src import Emojis, TextColor, parseArgs, import_or_install, NoSuchFileError
+import requests
+import time
 
 def main():
-    fileConfig = readConfig()
-    for folder in fileConfig['folders']:
+    import_or_install('requests', textColor, emoji)
+    username, token, configFile = parseArgs(textColor)
+    folderConfig = readConfig(configFile)
+    print(username, token)
+    for folder in folderConfig['folders']:
         parseFolder(folder, "")
 
 
-def readConfig():
-    with open("structure.json") as file: # Use file to refer to the file object
-        jsonConfig = file.read()
-
+def readConfig(config):
+    try: 
+        with open(config) as file:
+            jsonConfig = file.read()
+    except:
+        raise NoSuchFileError(config)
     return json.loads(jsonConfig)
 
 
@@ -20,32 +27,30 @@ def parseFolder(folder, path):
     # Create folder
     name = folder['name']
     createFolder(path+name)
-    print(name)
-    # Check for children
+    print(emoji.folder+" ", end="")
+    # See if there are sub-directories
     if 'folders' in folder:
-        #parseFolder(folder['folders'])
-        children = folder['folders']
-        for child in children:
+        for child in folder['folders']:
             parseFolder(child, path+name+"/")
+    # If there are no child folders
     else:
-        print("\t..")
+        print()
 
 def createFolder(path):
+    time.sleep(0.2)
     # Create folder
-    os.mkdir(path)
+    #print(path)
+    #os.mkdir(path)
     # Create github repository
     # Init this repository within this path
 
 
 
 if __name__ == "__main__":
+    emoji = Emojis()
+    textColor = TextColor()
     try:
-        emoji = Emojis()
-        textColor = TextColor()
-        import_or_install('requests', textColor, emoji)
-        username, token = parseArgs(textColor)
-        #print("%s %s" % (username, token))
-        #main()
+        main()
     except Exception as error:
         print(error)
     #os.remove('script.py')
