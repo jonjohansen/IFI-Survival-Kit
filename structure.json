@@ -1,30 +1,39 @@
 {
     "folders": [{
-            "name": "projects"
+            "name": "projects",
+            "description": "projects"
         },
         {
             "name": "first_semester",
+            "description": "A collection of all the courses in the first semester",
             "folders": [{
-                    "name": "inf-1100"
+                    "name": "inf-1100",
+                    "description": "Repository for the course inf-1100"
                 },
                 {
-                    "name": "mat-1000"
+                    "name": "mat-1000",
+                    "description": "Repository for the course mat-1000"
+
                 },
                 {
-                    "name": "mat-1005"
+                    "name": "mat-1005",
+                    "description": "Repository for the course inf-1005"
                 }
             ]
         },
         {
             "name": "second_semester",
             "folders": [{
-                    "name": "inf-1101"
+                    "name": "inf-1101",
+                    "description": "Datastructures and algorithms"
                 },
                 {
-                    "name": "mat-1400"
+                    "name": "inf-1400",
+                    "description": "Object oriented programming"
                 },
                 {
-                    "name": "sta-1000"
+                    "name": "sta-1000",
+                    "description": "Stats"
                 }
             ]
         }

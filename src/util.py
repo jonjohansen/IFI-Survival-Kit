@@ -16,19 +16,19 @@ def parseArgs(textColor):
     '''
 
     parser = argparse.ArgumentParser(description=desc, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('-u', '--username', metavar="<username>", type=str, help='Github username')
+    #parser.add_argument('-u', '--username', metavar="<username>", type=str, help='Github username')
     parser.add_argument('-t','--token', metavar="<token>", type=int, help='Personal access token')
     parser.add_argument('-c','--config', metavar="<PATH>", type=str, default='structure.json', help='JSON file describing folder structure')
 
     args = parser.parse_args()
     
-    if not args.username or args.token:
+    if not args.token:
         print("%s\nSome parameters was omitted.%s\nChecking global git config for defaults...%s" % (textColor.red, textColor.blue, textColor.blue))
-        configUsername = subprocess.Popen("git config --global user.name", shell=True, stdout=subprocess.PIPE).stdout.read().decode('utf-8').strip("\n")
+        #configUsername = subprocess.Popen("git config --global user.name", shell=True, stdout=subprocess.PIPE).stdout.read().decode('utf-8').strip("\n")
         configToken = subprocess.Popen("git config --global user.token", shell=True, stdout=subprocess.PIPE).stdout.read().decode('utf-8').strip("\n")
     
     # Ask user for username
-    if not (args.username):
+    '''if not (args.username):
         print("%sPlease enter your Github username:" % (textColor.purple), end='')
         # Check if there was a configUsername, if so supply it as arg
         if (configUsername != ""):
@@ -43,7 +43,7 @@ def parseArgs(textColor):
                 username = configUsername
         else:
             username = inputUsername
-
+    '''
     # Ask for user token
     if not (args.token):
         print("%sPlease enter your Github access token:" % (textColor.purple), end='')
@@ -59,7 +59,8 @@ def parseArgs(textColor):
                 token = configToken
         else:
             token = inputToken
-
+    
+    username = ""
     return username, token, args.config
 
 def import_or_install(package, textColor, emoji):
@@ -76,3 +77,24 @@ def import_or_install(package, textColor, emoji):
             pipmain(['install', package])
         else:
             raise NoPackageError(package)
+            
+def createRepository(name, description, token):
+    gitConfig = {
+        "name": name,
+        "description": description,
+        "private": True,
+        "has_issues": False,
+        "has_projects": False,
+        "has_wiki": False,
+        "auto_init": True
+        }
+
+    url = ("https://api.github.com/user/repos?access_token=%s") % (token)
+    r = requests.post(url, json=gitConfig)
+    
+    
+    if (r.status_code != 200):
+        pass 
+        # Throw github network error?
+def removeCredentials(path, username, token):
+    pass
