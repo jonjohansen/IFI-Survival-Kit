@@ -90,11 +90,28 @@ def createRepository(name, description, token):
         }
 
     url = ("https://api.github.com/user/repos?access_token=%s") % (token)
-    r = requests.post(url, json=gitConfig)
+    r = requests.post(url, json=gitConfig) # This is not undefined. Imported with import_or_install
     
     
     if (r.status_code != 200):
         pass 
         # Throw github network error?
+        # Check the if token is bogus?
+        # Any other errors, check r?
 def removeCredentials(path, username, token):
+    # TODO
+    # USE SED command to handle this?
     pass
+
+def submodule(path):
+    # Should be submodules at path - name
+    # Add repository as submodule
+    pass
+
+def readConfig(config):
+    try: 
+        with open(config) as file:
+            jsonConfig = file.read()
+    except:
+        raise NoSuchFileError(config)
+    return json.loads(jsonConfig)

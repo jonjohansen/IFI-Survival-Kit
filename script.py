@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 import json
 import os
-from src import Emojis, TextColor, parseArgs, import_or_install, NoSuchFileError, createRepository
+from src import *
 import time
 
 def main():
@@ -12,12 +12,13 @@ def main():
     # Get config and create elements
     folderConfig = readConfig(configFile)
     print(username, token)
+    # Init host repository
     for folder in folderConfig['folders']:
         parseFolder(folder, "", token)
         print("Im creating a subrepo!")
-    # Init host repository
-    # Add the appropriate folders as submodules
-
+        #submodule()
+    removeCredentials('./', username, token)    
+    # Remove credentials
 def readConfig(config):
     try: 
         with open(config) as file:
