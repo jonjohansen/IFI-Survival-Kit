@@ -9,23 +9,22 @@ from src import import_or_install, parseArgs, readConfig, createRepository, crea
 def main():
     # Get the packages necessary
     import_or_install('requests')
-    # Parse the arguments, get whats missing
     user, configFile = parseArgs()
-    # Get config and create elements
     folderConfig = readConfig(configFile)
-    # Init host repository
+
+    # Transform host repository
     shutil.rmtree('.git')
-    url = createRepository('Test0', 'Everything related to my studies', user, auto_init=False)
+    url = createRepository('UiT', 'Everything related to my studies', user, auto_init=False)
     createLocalRepository()
     addRemote(url)
+
     for folder in folderConfig['folders']:
         parseFolder(folder, "", user)
     
-    # Lets do some cleanups, move assets around
+    # Cleaning up, and moving resources to their places
     try:
         moveResources(user)
         shutil.copyfile('resources/README', 'README.md')
-        os.remove('.gitignore')
         shutil.copyfile('resources/gitignore', '.gitignore')
         shutil.rmtree('resources')
         shutil.rmtree('src')
@@ -33,9 +32,10 @@ def main():
         os.remove(configFile)
     except:
         raise SourceChangedError
-    commitChanges('.', 'Test0', user, 'Set up my entire folder structure!')
+    commitChanges('.', 'UiT', user, 'Set up my entire folder structure!')
 
 def moveResources(user):
+    '''Handles the resources folder'''
     reponame = 'IFI-resources'
     createRepository(reponame, 'Resources used for my stay at IFI-UiT', user)
     submodule("", reponame, user)
@@ -44,12 +44,9 @@ def moveResources(user):
 
 
 def parseFolder(folder, path, user):
-    # Create repository
+    '''Parses a folder and recursively creates sub-folders'''
     createRepository(folder['name'], folder['description'], user)
-    print(path+folder['name'])
-    # Initialize it as a submodule in the right place
     submodule(path, folder['name'], user)
-    # Iterate through the sub-folders, and repeat the process
     if 'folders' in folder:
         for child in folder['folders']:
             parseFolder(child, path+folder['name']+"/", user)
