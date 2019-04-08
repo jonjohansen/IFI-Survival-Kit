@@ -6,7 +6,7 @@ import subprocess
 import os
 from src import (import_or_install, parseArgs, readConfig, 
     removeCredentials, submodule, createRepository, commitChanges,
-    createLocalRepository, addRemote, Emojis, TextColor)
+    createLocalRepository, addRemote, Emojis, TextColor, SourceChangedError)
 
 def main():
     # Get the packages necessary
@@ -24,12 +24,17 @@ def main():
         parseFolder(folder, "", user)
     
     # Lets do some cleanups, move assets around
-    moveResources(user)
-    shutil.copyfile('resources/README.md', 'README.md')
-    shutil.rmtree('resources')
-    shutil.rmtree('src')
-    os.remove('script.py')
-    os.remove(configFile)
+    try:
+        moveResources(user)
+        shutil.copyfile('resources/README', 'README.md')
+        os.remove('.gitignore')
+        shutil.copyfile('resources/gitignore', '.gitignore')
+        shutil.rmtree('resources')
+        shutil.rmtree('src')
+        os.remove('script.py')
+        os.remove(configFile)
+    except:
+        raise SourceChangedError
     commitChanges('.', 'Test0', user, 'Set up my entire folder structure!')
 
 def moveResources(user):
