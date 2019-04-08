@@ -1,10 +1,18 @@
 import subprocess
 from subprocess import Popen, DEVNULL, STDOUT
-from .errors import CreateRepoError
+from .errors import BadCredentialError
 from .textcolor import TextColor, printBlue, printYellow
 from .emojis import Emojis
 import requests
 import json
+
+def TestToken(token):
+    url = 'https://api.github.com?access_token=%s' % token
+    res = requests.get(url)
+    if res.status_code == 200:
+        return True
+    else:
+        raise BadCredentialError
 
 def submodule(path, repo, user, branch='master'):
     ''' Creates a submodule referencing repo at given path
@@ -86,12 +94,14 @@ def removeCredentials(path, user):
     proc.wait()
 
 def addRemote(remote):
+    # TODO: Should be able to handle a path
     ''' Simply wraps "git remote add origin"'''
     cmd = ('git remote add origin %s') % (remote)
     proc = subprocess.Popen(cmd, shell=True, stdout=DEVNULL, stderr=STDOUT)
     proc.wait()
 
 def createLocalRepository():
+    # TODO: Should be able to handle a path
     '''Simply wraps "git init"'''
     proc = subprocess.Popen('git init', shell=True, stdout=DEVNULL, stderr=STDOUT)
     proc.wait()
