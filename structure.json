@@ -14,26 +14,19 @@
                     "name": "mat-1000",
                     "description": "Repository for the course mat-1000"
 
-                },
-                {
-                    "name": "mat-1005",
-                    "description": "Repository for the course inf-1005"
                 }
             ]
         },
         {
             "name": "second_semester",
+            "description": "A collection of all the courses in the second semester",
             "folders": [{
-                    "name": "inf-1101",
-                    "description": "Datastructures and algorithms"
-                },
-                {
-                    "name": "inf-1400",
-                    "description": "Object oriented programming"
-                },
-                {
-                    "name": "sta-1000",
-                    "description": "Stats"
+                    "name": "inf-random",
+                    "description": "Datastructures and algorithms",
+                    "folders": [{
+                        "name": "assignment_1_inf_random",
+                        "description": "Random test"
+                    }]
                 }
             ]
         }

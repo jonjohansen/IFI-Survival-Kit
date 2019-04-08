@@ -1,55 +1,60 @@
 #!/usr/local/bin/python3
 import json
-import os
-from src import *
+import shutil
 import time
+import subprocess
+import os
+from src import (import_or_install, parseArgs, readConfig, 
+    removeCredentials, submodule, createRepository, commitChanges,
+    createLocalRepository, addRemote, Emojis, TextColor)
 
 def main():
     # Get the packages necessary
     import_or_install('requests', textColor, emoji)
     # Parse the arguments, get whats missing
-    username, token, configFile = parseArgs(textColor)
+    user, configFile = parseArgs(textColor)
     # Get config and create elements
     folderConfig = readConfig(configFile)
-    print(username, token)
     # Init host repository
+    shutil.rmtree('.git')
+    url = createRepository('Test0', 'Everything related to my studies', user.token, auto_init=False)
+    createLocalRepository()
+    addRemote(url)
     for folder in folderConfig['folders']:
-        parseFolder(folder, "", token)
-        print("Im creating a subrepo!")
-        #submodule()
-    removeCredentials('./', username, token)    
-    # Remove credentials
-def readConfig(config):
-    try: 
-        with open(config) as file:
-            jsonConfig = file.read()
-    except:
-        raise NoSuchFileError(config)
-    return json.loads(jsonConfig)
+        parseFolder(folder, "", user)
+    
+    # Lets do some cleanups, move assets around
+    moveResources(user)
+    shutil.copyfile('resources/README.md', 'README.md')
+    shutil.rmtree('resources')
+    shutil.rmtree('src')
+    os.remove('script.py')
+    os.remove(configFile)
+    commitChanges('.', 'Test0', user, 'Set up my entire folder structure!')
+
+def moveResources(user):
+    reponame = 'IFI-resources'
+    createRepository(reponame, 'Resources used for my stay at IFI-UiT', user.token)
+    submodule("", reponame, user)
+    shutil.copytree('resources/report_templates', reponame+'/report_templates')
+    commitChanges(reponame+'/', reponame, user, 'Initial repo commit')
 
 
-def parseFolder(folder, path, token):
+def parseFolder(folder, path, user):
     # Create repository
-    #createRepository(folder['name'], folder['description'], token)
+    createRepository(folder['name'], folder['description'], user.token)
     print(path+folder['name'])
     # Initialize it as a submodule in the right place
-    submodule(path+folder['name'])
-     
+    submodule(path, folder['name'], user)
     # Iterate through the sub-folders, and repeat the process
     if 'folders' in folder:
         for child in folder['folders']:
-            subname = parseFolder(child, path+folder['name']+"/", token)
-            # Create submodule
-            print("\t creating submodule", subname)
+            parseFolder(child, path+folder['name']+"/", user)
         # Remove all credentials
-    else:
-        print("End")
-    return folder['name']
-
-def submodule(path):
-    # Should be submodules at path - name
-    # Add repository as submodule
-    pass
+        if path != '':
+            commitChanges(path+folder['name']+"/", folder['name'], user, 'Init submodules.')
+        else:
+            commitChanges(folder['name'], folder['name'], user, 'Init submodules')
 
 if __name__ == "__main__":
     emoji = Emojis()
@@ -58,4 +63,3 @@ if __name__ == "__main__":
         main()
     except Exception as error:
         print(error)
-    #os.remove('script.py')

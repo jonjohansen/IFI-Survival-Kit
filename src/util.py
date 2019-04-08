@@ -1,7 +1,11 @@
 import argparse
 import subprocess
-from .errors import NoUsernameError, NoTokenError, NoPackageError
+import os
+import json
+from .errors import NoUsernameError, NoTokenError, NoPackageError, NoSuchFileError
 from pip._internal import main as pipmain
+from .user import User
+import importlib
 
 def parseArgs(textColor):
     ''' Parses arguments and handles all the user input at the initial part of the script
@@ -16,19 +20,22 @@ def parseArgs(textColor):
     '''
 
     parser = argparse.ArgumentParser(description=desc, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    #parser.add_argument('-u', '--username', metavar="<username>", type=str, help='Github username')
+    parser.add_argument('-u', '--username', metavar="<username>", type=str, help='Github username')
     parser.add_argument('-t','--token', metavar="<token>", type=int, help='Personal access token')
+    parser.add_argument('-e','--email', metavar="<Email>", type=int, help='Github email')
     parser.add_argument('-c','--config', metavar="<PATH>", type=str, default='structure.json', help='JSON file describing folder structure')
 
     args = parser.parse_args()
     
-    if not args.token:
+    if not args.username or not args.token or not args.email:
         print("%s\nSome parameters was omitted.%s\nChecking global git config for defaults...%s" % (textColor.red, textColor.blue, textColor.blue))
-        #configUsername = subprocess.Popen("git config --global user.name", shell=True, stdout=subprocess.PIPE).stdout.read().decode('utf-8').strip("\n")
+
+        configUsername = subprocess.Popen("git config --global user.name", shell=True, stdout=subprocess.PIPE).stdout.read().decode('utf-8').strip("\n")
         configToken = subprocess.Popen("git config --global user.token", shell=True, stdout=subprocess.PIPE).stdout.read().decode('utf-8').strip("\n")
+        configEmail = subprocess.Popen("git config --global user.email", shell=True, stdout=subprocess.PIPE).stdout.read().decode('utf-8').strip("\n")
     
     # Ask user for username
-    '''if not (args.username):
+    if not (args.username):
         print("%sPlease enter your Github username:" % (textColor.purple), end='')
         # Check if there was a configUsername, if so supply it as arg
         if (configUsername != ""):
@@ -43,7 +50,9 @@ def parseArgs(textColor):
                 username = configUsername
         else:
             username = inputUsername
-    '''
+    else:
+        username = args.username
+    
     # Ask for user token
     if not (args.token):
         print("%sPlease enter your Github access token:" % (textColor.purple), end='')
@@ -59,14 +68,35 @@ def parseArgs(textColor):
                 token = configToken
         else:
             token = inputToken
+    else:
+        token = args.token
+
+    # Ask for user email    
+    if not (args.email):
+        print("%sPlease enter your Github email address:" % (textColor.purple), end='')
+        if (configToken != ""):
+            print("%s(default '%s') %s" % (textColor.green, configEmail, textColor.reset))
+        else:
+            print("%s (no default found)%s" % (textColor.blue, textColor.reset))
+        inputEmail = input()
+        if (inputEmail == ""):
+            if (configEmail == ""):
+                print("%sCommits will be made without an author e-mail" % (textColor.yellow))
+            else:
+                email = configEmail
+        else:
+            email = inputEmail
+    else:
+        token = args.token
     
-    username = ""
-    return username, token, args.config
+    user = User(username, email, token)
+    return user, args.config
 
 def import_or_install(package, textColor, emoji):
     ''' Tries to import a package. If package is not found it prompts the user to install it through pip'''
     try:
         __import__(package)
+        globals()[package] = importlib.import_module(package)
     except ImportError:
         print(("%s %sPip package %s%s %sis missing") % (emoji.package, textColor.blue, textColor.purple, package, textColor.blue))
         print(("%sYou can uninstall this afterwards with %s'pip uninstall %s'") % (textColor.blue, textColor.yellow, package) )
@@ -75,38 +105,11 @@ def import_or_install(package, textColor, emoji):
 
         if (res == "y" or res == "Y"):
             pipmain(['install', package])
+            globals()[package] = importlib.import_module(package)
         else:
             raise NoPackageError(package)
-            
-def createRepository(name, description, token):
-    gitConfig = {
-        "name": name,
-        "description": description,
-        "private": True,
-        "has_issues": False,
-        "has_projects": False,
-        "has_wiki": False,
-        "auto_init": True
-        }
 
-    url = ("https://api.github.com/user/repos?access_token=%s") % (token)
-    r = requests.post(url, json=gitConfig) # This is not undefined. Imported with import_or_install
-    
-    
-    if (r.status_code != 200):
-        pass 
-        # Throw github network error?
-        # Check the if token is bogus?
-        # Any other errors, check r?
-def removeCredentials(path, username, token):
-    # TODO
-    # USE SED command to handle this?
-    pass
 
-def submodule(path):
-    # Should be submodules at path - name
-    # Add repository as submodule
-    pass
 
 def readConfig(config):
     try: 
