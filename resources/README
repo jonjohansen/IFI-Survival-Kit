@@ -1,1 +1,4 @@
-# Readme for using the root folder
+# UiT
+> Everything related to my studies can be found here
+## Cloning
+To clone everything within this folder clone with `git clone --recursive <URL>`
