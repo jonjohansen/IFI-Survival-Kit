@@ -3,11 +3,13 @@ import subprocess
 import os
 import json
 from .errors import NoUsernameError, NoTokenError, NoPackageError, NoSuchFileError
+from .textcolor import TextColor, printBlue, printYellow, printPurple, printGreen, printRed, printCyan
+from .emojis import Emojis
 from pip._internal import main as pipmain
 from .user import User
 import importlib
 
-def parseArgs(textColor):
+def parseArgs():
     ''' Parses arguments and handles all the user input at the initial part of the script
     Should return the final username and token for the script to use 
     '''
@@ -28,7 +30,10 @@ def parseArgs(textColor):
     args = parser.parse_args()
     
     if not args.username or not args.token or not args.email:
-        print("%s\nSome parameters was omitted.%s\nChecking global git config for defaults...%s" % (textColor.red, textColor.blue, textColor.blue))
+        printCyan("%s Welcome to IFI Survival Kit %s" % (Emojis.graduation_cap, Emojis.safety_helmet))
+        printBlue("We'll have you sorted and organized in no time %s" % Emojis.fire)
+        printRed("\nSome parameters were omitted.")
+        printBlue("Checking global git config for default credentials....\n")
 
         configUsername = subprocess.Popen("git config --global user.name", shell=True, stdout=subprocess.PIPE).stdout.read().decode('utf-8').strip("\n")
         configToken = subprocess.Popen("git config --global user.token", shell=True, stdout=subprocess.PIPE).stdout.read().decode('utf-8').strip("\n")
@@ -36,12 +41,12 @@ def parseArgs(textColor):
     
     # Ask user for username
     if not (args.username):
-        print("%sPlease enter your Github username:" % (textColor.purple), end='')
+        printPurple("Please enter your Github username:", end='')
         # Check if there was a configUsername, if so supply it as arg
         if (configUsername != ""):
-            print("%s (defaulting to: '%s')%s" % (textColor.green, configUsername, textColor.reset))
+            printGreen(" (default: '%s')" % (configUsername))
         else:
-            print("%s (no default found)%s" % (textColor.blue, textColor.reset))
+            printBlue(" (no default found)")
         inputUsername = input()
         if (inputUsername == ""):
             if (configUsername == ""):
@@ -55,11 +60,11 @@ def parseArgs(textColor):
     
     # Ask for user token
     if not (args.token):
-        print("%sPlease enter your Github access token:" % (textColor.purple), end='')
+        printPurple("Please enter your Github access token:", end='')
         if (configToken != ""):
-            print("%s(default '%s') %s" % (textColor.green, configToken, textColor.reset))
+            printGreen(" (default '%s') " % (configToken))
         else:
-            print("%s (no default found)%s" % (textColor.blue, textColor.reset))
+            printBlue(" no default found)")
         inputToken = input()
         if (inputToken == ""):
             if (configToken == ""):
@@ -73,15 +78,15 @@ def parseArgs(textColor):
 
     # Ask for user email    
     if not (args.email):
-        print("%sPlease enter your Github email address:" % (textColor.purple), end='')
+        printPurple("Please enter your Github email address:", end='')
         if (configToken != ""):
-            print("%s(default '%s') %s" % (textColor.green, configEmail, textColor.reset))
+            printGreen(" (default '%s')" % (configEmail))
         else:
-            print("%s (no default found)%s" % (textColor.blue, textColor.reset))
+            printBlue(" (no default found)%s")
         inputEmail = input()
         if (inputEmail == ""):
             if (configEmail == ""):
-                print("%sCommits will be made without an author e-mail" % (textColor.yellow))
+                printYellow("Commits will be made without an author e-mail")
             else:
                 email = configEmail
         else:
@@ -92,16 +97,16 @@ def parseArgs(textColor):
     user = User(username, email, token)
     return user, args.config
 
-def import_or_install(package, textColor, emoji):
+def import_or_install(package):
     ''' Tries to import a package. If package is not found it prompts the user to install it through pip'''
     try:
         __import__(package)
         globals()[package] = importlib.import_module(package)
     except ImportError:
-        print(("%s %sPip package %s%s %sis missing") % (emoji.package, textColor.blue, textColor.purple, package, textColor.blue))
-        print(("%sYou can uninstall this afterwards with %s'pip uninstall %s'") % (textColor.blue, textColor.yellow, package) )
-        print(("%sDo you want to install it") % (textColor.blue), end="")
-        res = input(("%s (y/n) ") % (textColor.green))
+        print(("%s %sPip package %s%s %sis missing") % (Emojis.package, TextColor.blue, TextColor.purple, package, TextColor.blue))
+        print(("%sYou can uninstall this afterwards with %s'pip uninstall %s'") % (TextColor.blue, TextColor.yellow, package) )
+        printBlue(("Do you want to install it"), end="")
+        res = input(("%s (y/n) ") % (TextColor.green))
 
         if (res == "y" or res == "Y"):
             pipmain(['install', package])

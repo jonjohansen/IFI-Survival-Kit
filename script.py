@@ -4,20 +4,18 @@ import shutil
 import time
 import subprocess
 import os
-from src import (import_or_install, parseArgs, readConfig, 
-    removeCredentials, submodule, createRepository, commitChanges,
-    createLocalRepository, addRemote, Emojis, TextColor, SourceChangedError)
+from src import import_or_install, parseArgs, readConfig, createRepository, createLocalRepository, addRemote, SourceChangedError, commitChanges, createRepository, submodule
 
 def main():
     # Get the packages necessary
-    import_or_install('requests', textColor, emoji)
+    import_or_install('requests')
     # Parse the arguments, get whats missing
-    user, configFile = parseArgs(textColor)
+    user, configFile = parseArgs()
     # Get config and create elements
     folderConfig = readConfig(configFile)
     # Init host repository
     shutil.rmtree('.git')
-    url = createRepository('Test0', 'Everything related to my studies', user.token, auto_init=False)
+    url = createRepository('Test0', 'Everything related to my studies', user, auto_init=False)
     createLocalRepository()
     addRemote(url)
     for folder in folderConfig['folders']:
@@ -39,7 +37,7 @@ def main():
 
 def moveResources(user):
     reponame = 'IFI-resources'
-    createRepository(reponame, 'Resources used for my stay at IFI-UiT', user.token)
+    createRepository(reponame, 'Resources used for my stay at IFI-UiT', user)
     submodule("", reponame, user)
     shutil.copytree('resources/report_templates', reponame+'/report_templates')
     commitChanges(reponame+'/', reponame, user, 'Initial repo commit')
@@ -47,7 +45,7 @@ def moveResources(user):
 
 def parseFolder(folder, path, user):
     # Create repository
-    createRepository(folder['name'], folder['description'], user.token)
+    createRepository(folder['name'], folder['description'], user)
     print(path+folder['name'])
     # Initialize it as a submodule in the right place
     submodule(path, folder['name'], user)
@@ -62,8 +60,6 @@ def parseFolder(folder, path, user):
             commitChanges(folder['name'], folder['name'], user, 'Init submodules')
 
 if __name__ == "__main__":
-    emoji = Emojis()
-    textColor = TextColor()
     try:
         main()
     except Exception as error:

@@ -1,5 +1,5 @@
 import sys
-class TextColor(object):
+class _TextColor(object):
     def __init__(self):
         # Add dictionary of text colors
         self.__dict__.update(
@@ -16,6 +16,8 @@ class TextColor(object):
             })
     def __getattr__(self, name):
         raise AttributeError("%r instance has no attribute %r" % (self, name))
+
+TextColor = _TextColor()
 
 def printBlack(msg, sep='', end='\n', file=sys.stdout, flush=False):
     print("\033[1;30;49m" + msg + "\033[m", sep=sep, end=end, file=file, flush=False)

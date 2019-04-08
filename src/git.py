@@ -1,7 +1,10 @@
 import subprocess
-from subprocess import Popen, DEVNULL
-from .errors import CreateRepoError 
+from subprocess import Popen, DEVNULL, STDOUT
+from .errors import CreateRepoError
+from .textcolor import TextColor, printBlue, printYellow
+from .emojis import Emojis
 import requests
+import json
 
 def submodule(path, repo, user, branch='master'):
     ''' Creates a submodule referencing repo at given path
@@ -13,7 +16,7 @@ def submodule(path, repo, user, branch='master'):
     if path != "":
         cmd = 'cd ' + path + ' && '
     cmd += addModule
-    proc = subprocess.Popen(cmd, shell=True, stdout=DEVNULL)
+    proc = subprocess.Popen(cmd, shell=True, stdout=DEVNULL, stderr=STDOUT)
     proc.wait()
 
 def commitChanges(path, repo, user, msg):
@@ -32,16 +35,16 @@ def commitChanges(path, repo, user, msg):
     # Commit 
     author = ("%s <%s>") % (user.username, user.email) 
     cmd = cd + ('git commit --author="%s" -m "%s"') % (author, msg)
-    proc = subprocess.Popen(cmd, shell=True)
+    proc = subprocess.Popen(cmd, shell=True, stdout=DEVNULL, stderr=STDOUT)
     proc.wait()
     # Push
     url = ("https://%s@github.com/%s/%s.git") % (user.token, user.username, repo)
     cmd = cd + 'git push ' + url
-    proc = subprocess.Popen(cmd, shell=True)
+    proc = subprocess.Popen(cmd, shell=True, stdout=DEVNULL, stderr=STDOUT)
     proc.wait()
       
-def createRepository(name, description, token, auto_init=True):
-    ''' Create a repository using a token, should return the clone url for that token'''
+def createRepository(name, description, user, auto_init=True):
+    ''' Create a repository using user.token, should return the clone url for that token'''
     gitConfig = {
         "name": name,
         "description": description,
@@ -52,20 +55,25 @@ def createRepository(name, description, token, auto_init=True):
         "auto_init": auto_init
         }
     
-    url = ("https://api.github.com/user/repos?access_token=%s") % (token)
+    url = ("https://api.github.com/user/repos?access_token=%s") % (user.token)
     response = requests.post(url, json=gitConfig) # This is not undefined. 
 
     if (response.status_code == 201):
         url = response.json()['clone_url']
         return url
     elif (response.status_code == 422):
-        if (response.json()['errors'].message == 'name already exists on this account'):
-            print('Repository already exists. Will use this in the structure')
+        if (response.json()['errors'][0]['message'] == 'name already exists on this account'):
+            printBlue(('%s The repository') % (Emojis.dissy), end=' ')
+            printYellow(name, end=' ')
+            printBlue('already exists on your account and could not be created.')
+            printBlue("We'll include the existing repository in this folder instead %s" % Emojis.linked_paperclip)
             # Lets return the url to this
-            return 
+            return ('https://github.com/%s/%s.git') % (user.username, name)
         else:
             print('Request was well formed, but there were some semantic errors')
-    else:
+
+    elif (response.status_code == 401):
+        # Bad credentials
         raise CreateRepoError
 
 def removeCredentials(path, user):
@@ -80,10 +88,10 @@ def removeCredentials(path, user):
 def addRemote(remote):
     ''' Simply wraps "git remote add origin"'''
     cmd = ('git remote add origin %s') % (remote)
-    proc = subprocess.Popen(cmd, shell=True)
+    proc = subprocess.Popen(cmd, shell=True, stdout=DEVNULL, stderr=STDOUT)
     proc.wait()
 
 def createLocalRepository():
     '''Simply wraps "git init"'''
-    proc = subprocess.Popen('git init', shell=True)
+    proc = subprocess.Popen('git init', shell=True, stdout=DEVNULL, stderr=STDOUT)
     proc.wait()
