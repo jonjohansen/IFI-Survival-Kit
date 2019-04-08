@@ -8,7 +8,7 @@ from .emojis import Emojis
 from pip._internal import main as pipmain
 from .user import User
 import importlib
-
+from .git import TestToken
 def parseArgs():
     ''' Parses arguments and handles all the user input at the initial part of the script
     Should return the final username and token for the script to use 
@@ -76,6 +76,8 @@ def parseArgs():
     else:
         token = args.token
 
+    # Lets see if it works
+    TestToken(token)
     # Ask for user email    
     if not (args.email):
         printPurple("Please enter your Github email address:", end='')
