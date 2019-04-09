@@ -1,7 +1,4 @@
-import subprocess
-import requests
-import json
-import sys
+import os, sys, subprocess, requests
 from subprocess import Popen, DEVNULL, STDOUT
 from .errors import BadCredentialError, GithubError
 from .textcolor import TextColor, printBlue, printYellow
@@ -72,7 +69,7 @@ def createRepository(name, description, user, auto_init=True):
         return url
     elif (response.status_code == 422):
         if (response.json()['errors'][0]['message'] == 'name already exists on this account'):
-            printBlue(('%s The repository') % (Emojis.dissy), end=' ')
+            printBlue(('\n%s The repository') % (Emojis.dissy), end=' ')
             printYellow(name, end=' ')
             printBlue('already exists on your account and could not be created.')
             printBlue("We'll include the existing repository in this folder instead %s" % Emojis.linked_paperclip)
@@ -89,14 +86,13 @@ def createRepository(name, description, user, auto_init=True):
 
 def removeCredentials(path, user):
     ''' Removes token from the path added by submodules '''
-    # TODO: CHECK THAT PATH HAS A FILE NAMED .GITMODULES
-
-    cd = 'cd '+ path + '  && '
-    # MacOS actually requires you to pass an emptystring to -i with sed
-    # to not create a file. We'll just delete it if it exists
-    cmd = cd + ("sed -i -e 's/%s//g' .gitmodules && rm .gitmodules-e") % (user.token+'@')
-    proc = subprocess.Popen(cmd, shell=True)
-    proc.wait()
+    if os.path.isfile(path+'.gitmodules'):
+        cd = 'cd '+ path + '  && '
+        # MacOS actually requires you to pass an emptystring to -i with sed
+        # to not create a file. We'll just delete it if it exists
+        cmd = cd + ("sed -i -e 's/%s//g' .gitmodules && rm .gitmodules-e") % (user.token+'@')
+        proc = subprocess.Popen(cmd, shell=True)
+        proc.wait()
 
 def addRemote(remote):
     # TODO: Should be able to handle a path

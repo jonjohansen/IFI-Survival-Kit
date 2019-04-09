@@ -1,9 +1,5 @@
 #!/usr/local/bin/python3
-import json
-import shutil
-import time
-import subprocess
-import os
+import os, shutil, json, subprocess, os
 from src import import_or_install, parseArgs, readConfig, createRepository,\
      createLocalRepository, addRemote, SourceChangedError, commitChanges, \
          createRepository, submodule, printBlue, printYellow, Emojis
@@ -16,7 +12,7 @@ def main():
 
     printBlue("\nRead ", end='')
     printYellow(configFile, end='')
-    printBlue(' and proceeding to create repositories' + Emojis.pan)
+    printBlue(" and proceeding to cookin' up some repositories " + Emojis.pan)
     # Transform host repository
     shutil.rmtree('.git')
     url = createRepository('UiT', 'Everything related to my studies', user, auto_init=False)
@@ -65,4 +61,4 @@ if __name__ == "__main__":
         main()
     except Exception as error:
         print(error)
-    subprocess.Popen('cd .. && mv IFI-Survival-Kit UiT')
+    subprocess.Popen('cd .. && mv IFI-Survival-Kit UiT', shell=True)
