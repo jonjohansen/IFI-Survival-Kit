@@ -33,5 +33,6 @@ class NoTokenError(Exception):
         "https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line %s") % (TextColor.green, Emojis.link)
         super().__init__(message + link)
 class GithubError(Exception):
+    def __init__(self):
         message = ("\n%s%s ERROR: Something went wrong when communicating with Github %s\n\n") % (Emojis.alert, TextColor.red, Emojis.alert)
         super().__init__(message)
