@@ -1,6 +1,6 @@
 import subprocess
 from subprocess import Popen, DEVNULL, STDOUT
-from .errors import BadCredentialError
+from .errors import BadCredentialError, GithubError
 from .textcolor import TextColor, printBlue, printYellow
 from .emojis import Emojis
 import requests
@@ -33,7 +33,6 @@ def commitChanges(path, repo, user, msg):
     
     Note: This action will clone this repository at given path
     '''
-
     if path != '':
         removeCredentials(path, user)
     cd = 'cd '+ path + '  && '
@@ -78,11 +77,13 @@ def createRepository(name, description, user, auto_init=True):
             # Lets return the url to this
             return ('https://github.com/%s/%s.git') % (user.username, name)
         else:
-            print('Request was well formed, but there were some semantic errors')
-
+            #Request was well formed, but there were some semantic errors
+            raise GithubError
     elif (response.status_code == 401):
         # Bad credentials
-        raise CreateRepoError
+        raise BadCredentialError
+    else:
+        raise GithubError
 
 def removeCredentials(path, user):
     ''' Removes token from the path added by submodules '''
