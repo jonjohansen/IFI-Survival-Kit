@@ -87,6 +87,8 @@ def createRepository(name, description, user, auto_init=True):
 
 def removeCredentials(path, user):
     ''' Removes token from the path added by submodules '''
+    # TODO: CHECK THAT PATH HAS A FILE NAMED .GITMODULES
+    
     cd = 'cd '+ path + '  && '
     # MacOS actually requires you to pass an emptystring to -i with sed
     # to not create a file. We'll just delete it if it exists

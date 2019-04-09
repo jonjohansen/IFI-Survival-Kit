@@ -15,4 +15,5 @@ class _Emojis:
         self.safety_helmet = "\U000026D1"
         self.grinning_cat1 = "\U0001F638"
         self.fire = "\U0001F525"
+        self.pan = "\U0001F373"
 Emojis = _Emojis()

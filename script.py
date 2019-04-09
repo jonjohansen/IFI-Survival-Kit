@@ -4,7 +4,9 @@ import shutil
 import time
 import subprocess
 import os
-from src import import_or_install, parseArgs, readConfig, createRepository, createLocalRepository, addRemote, SourceChangedError, commitChanges, createRepository, submodule
+from src import import_or_install, parseArgs, readConfig, createRepository,\
+     createLocalRepository, addRemote, SourceChangedError, commitChanges, \
+         createRepository, submodule, printBlue, printYellow, Emojis
 
 def main():
     # Get the packages necessary
@@ -12,12 +14,14 @@ def main():
     user, configFile = parseArgs()
     folderConfig = readConfig(configFile)
 
+    printBlue("\nRead ", end='')
+    printYellow(configFile, end='')
+    printBlue(' and proceeding to create repositories' + Emojis.pan)
     # Transform host repository
     shutil.rmtree('.git')
     url = createRepository('UiT', 'Everything related to my studies', user, auto_init=False)
     createLocalRepository()
     addRemote(url)
-
     for folder in folderConfig['folders']:
         parseFolder(folder, "", user)
     
