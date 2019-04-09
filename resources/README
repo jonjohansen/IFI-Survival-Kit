@@ -2,3 +2,11 @@
 > Everything related to my studies can be found here
 ## Cloning
 To clone everything within this folder clone with `git clone --recursive <URL>`
+
+#### Add a new repository to the structure
+This script does not account for the optional courses, and any other kinds of repositories. If you want these in the structure you can follow these steps:
+
+1. To add a repository to the structure, [create](https://github.com/new) a repository as usual. [(Guide)](https://help.github.com/en/articles/create-a-repo)
+2. Move into the parent repository you want to add the repository within e.g `cd first_semester`
+3. Use the command `git submodule add <URL>`
+4. Commit the newly added submodule within the parent repository
