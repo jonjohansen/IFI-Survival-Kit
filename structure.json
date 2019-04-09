@@ -103,8 +103,8 @@
             ]
         },
         {
-            "name": "eigth_semester",
-            "description": "A collection of all the courses in the eight semester",
+            "name": "eighth_semester",
+            "description": "A collection of all the courses in the eighth semester",
             "folders": [
                 {
                     "name": "inf-3203",

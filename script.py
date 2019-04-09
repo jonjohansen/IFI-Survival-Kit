@@ -61,3 +61,4 @@ if __name__ == "__main__":
         main()
     except Exception as error:
         print(error)
+    subprocess.Popen('cd .. && mv IFI-Survival-Kit UiT')
