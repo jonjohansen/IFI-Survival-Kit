@@ -1,34 +1,128 @@
 {
-    "folders": [{
-            "name": "projects",
-            "description": "projects"
-        },
+    "folders": [
         {
             "name": "first_semester",
             "description": "A collection of all the courses in the first semester",
             "folders": [{
                     "name": "inf-1100",
-                    "description": "Repository for the course inf-1100"
+                    "description": "Innføring i programmering og datamaskiners virkemåte"
                 },
                 {
-                    "name": "mat-1000",
-                    "description": "Repository for the course mat-1000"
+                    "name": "mat-1001",
+                    "description": "Kalkulus 1"
 
+                },
+                {
+                    "name": "mat-1005",
+                    "description": "Diskret matematikk"
                 }
             ]
         },
         {
             "name": "second_semester",
             "description": "A collection of all the courses in the second semester",
-            "folders": [{
-                    "name": "inf-random",
-                    "description": "Datastructures and algorithms",
-                    "folders": [{
-                        "name": "assignment_1_inf_random",
-                        "description": "Random test"
-                    }]
+            "folders": [
+                {
+                    "name": "inf-1101",
+                    "description": "Datastrukturer og algoritmer"
+                },
+                {
+                    "name": "inf-1400",
+                    "description": "Objektorientert programmering"
+                },
+                {
+                    "name": "sta-1001",
+                    "description": "Statistikk og sannsynlighet"
                 }
             ]
+        },
+        {
+            "name": "third_semester",
+            "description": "A collection of all the courses in the third semester",
+            "folders": [
+                {
+                    "name": "inf-2200",
+                    "description": "Datamaskinarkitektur og -organisering"
+                },
+                {
+                    "name": "fys-0100",
+                    "description": "Generell fysikk"
+                }
+            ]
+        },
+        {
+            "name": "fourth_semester",
+            "description": "A collection of all the courses in the fourth semester",
+            "folders": [
+                {
+                    "name": "inf-2201",
+                    "description": "Operating system fundamentals"
+                }
+            ]
+        },
+        {
+            "name": "fifth_semester",
+            "description": "A collection of all the courses in the fifth semester",
+            "folders": [
+                {
+                    "name": "inf-2202",
+                    "description": "Concurrent and Data-Intensive Programming"
+                },
+                {
+                    "name": "inf-2700",
+                    "description": "Database Systems"
+                }
+            ]
+        },
+        {
+            "name": "sixth_semester",
+            "description": "A collection of all the courses in the sixth semester",
+            "folders": [
+                {
+                    "name": "inf-2900",
+                    "description": "Software engineering"
+                },
+                {
+                    "name": "fil-0700",
+                    "description": "Examen philosophicum, Tromsøvarianten"
+                }
+            ]
+        },
+        {
+            "name": "seventh_semester",
+            "description": "A collection of all the courses in the seventh semester",
+            "folders": [
+                {
+                    "name": "inf-3200",
+                    "description": "Distributed Systems Fundamentals"
+                },
+                {
+                    "name": "inf-3201",
+                    "description": "Parallel Programming"
+                }
+            ]
+        },
+        {
+            "name": "eigth_semester",
+            "description": "A collection of all the courses in the eight semester",
+            "folders": [
+                {
+                    "name": "inf-3203",
+                    "description": "Advanced Distributed Systems"
+                },
+                {
+                    "name": "inf-3701",
+                    "description": "Advanced database systems"
+                }
+            ]
+        },
+        {
+            "name": "ninth_semester",
+            "description": "A collection of all the courses in the ninth semester"
+        },
+        {
+            "name": "tenth_semester",
+            "description": "A collection of all the courses in the tenth semester. Hopefully a Master's Thesis in Computer Science"
         }
     ]
 }
