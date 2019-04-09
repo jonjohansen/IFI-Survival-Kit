@@ -1,11 +1,11 @@
 import subprocess
+import requests
+import json
+import sys
 from subprocess import Popen, DEVNULL, STDOUT
 from .errors import BadCredentialError, GithubError
 from .textcolor import TextColor, printBlue, printYellow
 from .emojis import Emojis
-import requests
-import json
-
 def TestToken(token):
     url = 'https://api.github.com?access_token=%s' % token
     res = requests.get(url)
@@ -63,8 +63,10 @@ def createRepository(name, description, user, auto_init=True):
         }
     
     url = ("https://api.github.com/user/repos?access_token=%s") % (user.token)
-    response = requests.post(url, json=gitConfig) # This is not undefined. 
-
+    response = requests.post(url, json=gitConfig) # This is not undefined.
+    # Give some user response
+    sys.stdout.write(Emojis.folder + " ")
+    sys.stdout.flush()
     if (response.status_code == 201):
         url = response.json()['clone_url']
         return url
@@ -88,7 +90,7 @@ def createRepository(name, description, user, auto_init=True):
 def removeCredentials(path, user):
     ''' Removes token from the path added by submodules '''
     # TODO: CHECK THAT PATH HAS A FILE NAMED .GITMODULES
-    
+
     cd = 'cd '+ path + '  && '
     # MacOS actually requires you to pass an emptystring to -i with sed
     # to not create a file. We'll just delete it if it exists
