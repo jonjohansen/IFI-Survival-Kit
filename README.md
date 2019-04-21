@@ -1,26 +1,25 @@
-# IFI Survival Kit
-> Small script that helps you get started with using Github on a daily basis. Made custom for the students at IFI-UiT.
+<p align="center"><img src="https://raw.githubusercontent.com/jonjohansen/IFI-Survival-Kit/master/resources/images/ifi-survival-kit.svg?sanitize=true"/></p>
 
-> Note: This is a work in progress, and should be treated as such. Any issues or bugs found can be reported in the issues section, and are welcome!
+> Small script to help you get started with using Github for your studies @ UiT-IFI
+
 # Overview
 The follow script creates a structure of Github repositories, as well as local repositories resembling this structure:
 
 ```
-                           |‾‾inf-1100
-                           |
-        |‾‾first_semester -|---mat-1005
-        |                  |
-        |                  |___mat-1001
-        |
-        |                  |‾‾inf-1101
-        |                  |
-  uit---|--second_semester-|---inf-1001
-        |                  |
-        |                  |___sta-1001
-        |
-        .
-        .
-        .
+╔══════════════════════════╗       ┌─────┐
+║     IFI Survival Kit     ║       │ uit │
+║         Structure        ║       └──┬──┘
+╚══════════════════════════╝          │                         ...n semesters
+                   ┌──────────────────┼──────────────────┬ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+                   │                  │                  │
+     ┌─────────────┴┐         ┌───────┴───────┐         ┌┴──────────────┐
+     │first_semester│         │second_semester│         │third_semester │
+     └┬──────┬─────┬┘         └┬──────┬──────┬┘         └┬──────┬──────┬┘
+      │      │     │           │      │      │           │      │      │
+┌─────┴┐ ┌───┴──┐ ┌┴─────┐┌────┴─┐ ┌──┴───┐ ┌┴─────┐┌────┴─┐ ┌──┴───┐ ┌┴─────┐
+│ inf- │ │ mat- │ │ mat- ││ inf- │ │ inf- │ │ sta- ││ inf- │ │ fys- │ │  ?   │
+│ 1100 │ │ 1005 │ │ 1001 ││ 1101 │ │ 1400 │ │ 1001 ││ 2200 │ │ 0100 │ │      │
+└──────┘ └──────┘ └──────┘└──────┘ └──────┘ └──────┘└──────┘ └──────┘ └──────┘
 ```
 The structure can be found in its entirety in [structure.json](structure.json)
 
