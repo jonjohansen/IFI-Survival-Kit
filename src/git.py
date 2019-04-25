@@ -1,10 +1,11 @@
-import os, sys, subprocess, requests
+import os, sys, subprocess
 from subprocess import Popen, DEVNULL, STDOUT
 from .errors import BadCredentialError, GithubError
 from .textcolor import TextColor, printBlue, printYellow
 from .emojis import Emojis
 def TestToken(token):
     url = 'https://api.github.com?access_token=%s' % token
+    import requests
     res = requests.get(url)
     if res.status_code == 200:
         return True
@@ -60,6 +61,7 @@ def createRepository(name, description, user, auto_init=True):
         }
     
     url = ("https://api.github.com/user/repos?access_token=%s") % (user.token)
+    import requests
     response = requests.post(url, json=gitConfig) # This is not undefined.
     # Give some user response
     sys.stdout.write(Emojis.folder + " ")
