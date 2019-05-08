@@ -24,7 +24,7 @@ def main():
     
     # Cleaning up, and moving resources to their places
     try:
-        #moveResources(user)
+        moveResources(user)
         shutil.copyfile('resources/README', 'README.md')
         shutil.copyfile('resources/gitignore', '.gitignore')
         shutil.rmtree('resources')
@@ -39,7 +39,7 @@ def moveResources(user):
     '''Handles the resources folder'''
     name = 'IFI-resources'
     createRepository(name, 'Resources used for my stay at IFI-UiT', user)
-    submodule("", name, user)
+    submodule(name, user)
     shutil.copytree('resources/report_templates', name+'/report_templates')
     commitChanges(name, user, 'Initial repo commit')
 
