@@ -23,8 +23,8 @@ def parseArgs():
 
     parser = argparse.ArgumentParser(description=desc, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-u', '--username', metavar="<username>", type=str, help='Github username')
-    parser.add_argument('-t','--token', metavar="<token>", type=int, help='Personal access token')
-    parser.add_argument('-e','--email', metavar="<Email>", type=int, help='Github email')
+    parser.add_argument('-t','--token', metavar="<token>", type=str, help='Personal access token')
+    parser.add_argument('-e','--email', metavar="<Email>", type=str, help='Github email')
     parser.add_argument('-c','--config', metavar="<PATH>", type=str, default='structure.json', help='JSON file describing folder structure')
 
     args = parser.parse_args()
