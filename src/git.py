@@ -3,6 +3,7 @@ from subprocess import Popen, DEVNULL, STDOUT
 from .errors import BadCredentialError, GithubError
 from .textcolor import TextColor, printBlue, printYellow
 from .emojis import Emojis
+
 def TestToken(token):
     url = 'https://api.github.com?access_token=%s' % token
     import requests
@@ -12,39 +13,38 @@ def TestToken(token):
     else:
         raise BadCredentialError
 
-def submodule(path, repo, user, branch='master'):
-    ''' Creates a submodule referencing repo at given path
+def submodule(repo, user, branch='master'):
+    ''' Creates a submodule
     Branch is set to master by default'''
     url = ("https://%s@github.com/%s/%s.git") % (user.token, user.username, repo)
-    addModule = ("git submodule add -b %s %s") % (branch, url)
-    cmd = ""
-    # Check if we have to cd
-    if path != "":
-        cmd = 'cd ' + path + ' && '
-    cmd += addModule
+
+    cmd = ("git submodule add -b %s %s") % (branch, url)
     proc = subprocess.Popen(cmd, shell=True, stdout=DEVNULL, stderr=STDOUT)
     proc.wait()
 
-def commitChanges(path, repo, user, msg):
-    ''' CDs into a path and Commits and pushes changes to Github.
+def commitChanges(repo, user, msg):
+    '''Commits and pushes changes to Github.
     If empty path is given, it will not attempt to clear credentials beforehand 
     
     Note: This action will clone this repository at given path
     '''
-    if path != '':
-        removeCredentials(path, user)
-    cd = 'cd '+ path + '  && '
-    cmd = cd + 'git add .'
+    # Remove the token from submodules before commiting. Always
+    removeCredentials(user)
+    
+    # Add all the files
+    cmd = 'git add .'
     proc = subprocess.Popen(cmd, shell=True)
     proc.wait()
+
     # Commit 
     author = ("%s <%s>") % (user.username, user.email) 
-    cmd = cd + ('git commit --author="%s" -m "%s"') % (author, msg)
+    cmd = 'git commit --author="%s" -m "%s"' % (author, msg)
     proc = subprocess.Popen(cmd, shell=True, stdout=DEVNULL, stderr=STDOUT)
     proc.wait()
+
     # Push
     url = ("https://%s@github.com/%s/%s.git") % (user.token, user.username, repo)
-    cmd = cd + 'git push ' + url
+    cmd = 'git push ' + url
     proc = subprocess.Popen(cmd, shell=True, stdout=DEVNULL, stderr=STDOUT)
     proc.wait()
       
@@ -86,25 +86,22 @@ def createRepository(name, description, user, auto_init=True):
     else:
         raise GithubError
 
-def removeCredentials(path, user):
+def removeCredentials(user):
     ''' Removes token from the path added by submodules '''
-    if os.path.isfile(path+'.gitmodules'):
-        cd = 'cd '+ path + '  && '
+    if os.path.isfile('.gitmodules'):
         # MacOS actually requires you to pass an emptystring to -i with sed
         # to not create a file. We'll just delete it if it exists
-        cmd = cd + ("sed -i -e 's/%s//g' .gitmodules && rm .gitmodules-e") % (user.token+'@')
+        cmd = ("sed -i -e 's/%s//g' .gitmodules && rm .gitmodules-e") % (user.token+'@')
         proc = subprocess.Popen(cmd, shell=True)
         proc.wait()
 
 def addRemote(remote):
-    # TODO: Should be able to handle a path
     ''' Simply wraps "git remote add origin"'''
     cmd = ('git remote add origin %s') % (remote)
     proc = subprocess.Popen(cmd, shell=True, stdout=DEVNULL, stderr=STDOUT)
     proc.wait()
 
 def createLocalRepository():
-    # TODO: Should be able to handle a path
     '''Simply wraps "git init"'''
     proc = subprocess.Popen('git init', shell=True, stdout=DEVNULL, stderr=STDOUT)
     proc.wait()

@@ -18,12 +18,13 @@ def main():
     url = createRepository('UiT', 'Everything related to my studies', user, auto_init=False)
     createLocalRepository()
     addRemote(url)
+    # Start the chain
     for folder in folderConfig['folders']:
-        parseFolder(folder, "", user)
+        parseFolder(folder, os.getcwd(), user)
     
     # Cleaning up, and moving resources to their places
     try:
-        moveResources(user)
+        #moveResources(user)
         shutil.copyfile('resources/README', 'README.md')
         shutil.copyfile('resources/gitignore', '.gitignore')
         shutil.rmtree('resources')
@@ -32,29 +33,29 @@ def main():
         os.remove(configFile)
     except:
         raise SourceChangedError
-    commitChanges('.', 'UiT', user, 'Set up my entire folder structure!')
+    commitChanges('UiT', user, 'Set up my entire folder structure!')
 
 def moveResources(user):
     '''Handles the resources folder'''
-    reponame = 'IFI-resources'
-    createRepository(reponame, 'Resources used for my stay at IFI-UiT', user)
-    submodule("", reponame, user)
-    shutil.copytree('resources/report_templates', reponame+'/report_templates')
-    commitChanges(reponame+'/', reponame, user, 'Initial repo commit')
+    name = 'IFI-resources'
+    createRepository(name, 'Resources used for my stay at IFI-UiT', user)
+    submodule("", name, user)
+    shutil.copytree('resources/report_templates', name+'/report_templates')
+    commitChanges(name, user, 'Initial repo commit')
 
 
 def parseFolder(folder, path, user):
+
     '''Parses a folder and recursively creates sub-folders'''
     createRepository(folder['name'], folder['description'], user)
-    submodule(path, folder['name'], user)
+    submodule(folder['name'], user)
     if 'folders' in folder:
         for child in folder['folders']:
-            parseFolder(child, path+folder['name']+"/", user)
-        # Remove all credentials
-        if path != '':
-            commitChanges(path+folder['name']+"/", folder['name'], user, 'Init submodules.')
-        else:
-            commitChanges(folder['name'], folder['name'], user, 'Init submodules')
+            os.chdir(path+'/'+folder['name'])
+            parseFolder(child, path+'/'+folder['name'], user)
+        # Commit changes
+        commitChanges(folder['name'], user, 'Init submodules')
+        os.chdir(path)
 
 if __name__ == "__main__":
     try:
