@@ -1,4 +1,4 @@
-#!/usr/local/bin/python3
+#!/usr/bin/env python3
 import os, shutil, json, subprocess, os
 from src import import_or_install, parseArgs, readConfig, createRepository,\
      createLocalRepository, addRemote, SourceChangedError, commitChanges, \
