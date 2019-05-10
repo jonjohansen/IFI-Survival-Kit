@@ -16,4 +16,6 @@ class _Emojis:
         self.grinning_cat1 = "\U0001F638"
         self.fire = "\U0001F525"
         self.pan = "\U0001F373"
+        self.check_mark = "\U00002705"
+        self.thumbs_up = "\U0001F44D"
 Emojis = _Emojis()

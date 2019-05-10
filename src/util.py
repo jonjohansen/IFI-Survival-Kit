@@ -22,62 +22,51 @@ def parseArgs():
     '''
 
     parser = argparse.ArgumentParser(description=desc, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('-u', '--username', metavar="<username>", type=str, help='Github username')
     parser.add_argument('-t','--token', metavar="<token>", type=str, help='Personal access token')
     parser.add_argument('-e','--email', metavar="<Email>", type=str, help='Github email')
     parser.add_argument('-c','--config', metavar="<PATH>", type=str, default='structure.json', help='JSON file describing folder structure')
 
     args = parser.parse_args()
     
-    if not args.username or not args.token or not args.email:
-        printCyan("%s Welcome to IFI Survival Kit %s" % (Emojis.graduation_cap, Emojis.safety_helmet))
-        printBlue("We'll have you sorted and organized in no time %s" % Emojis.fire)
-        printRed("\nSome parameters were omitted.")
-        printBlue("Checking global git config for default credentials....\n")
+    printCyan("%s Welcome to IFI Survival Kit %s" % (Emojis.graduation_cap, Emojis.safety_helmet))
+    printBlue("We'll have you sorted and organized in no time %s" % Emojis.fire)
 
-        configUsername = subprocess.Popen("git config --global user.name", shell=True, stdout=subprocess.PIPE).stdout.read().decode('utf-8').strip("\n")
+    if args.token or not args.email:
+        printBlue("We will look in the global git config for default credentials....\n")
+
         configToken = subprocess.Popen("git config --global user.token", shell=True, stdout=subprocess.PIPE).stdout.read().decode('utf-8').strip("\n")
         configEmail = subprocess.Popen("git config --global user.email", shell=True, stdout=subprocess.PIPE).stdout.read().decode('utf-8').strip("\n")
-    
-    # Ask user for username
-    if not (args.username):
-        printPurple("Please enter your Github username:", end='')
-        # Check if there was a configUsername, if so supply it as arg
-        if (configUsername != ""):
-            printGreen(" (default: '%s')" % (configUsername))
-        else:
-            printBlue(" (no default found)")
-        inputUsername = input()
-        if (inputUsername == ""):
-            if (configUsername == ""):
-                raise NoUsernameError
-            else:
-                username = configUsername
-        else:
-            username = inputUsername
-    else:
-        username = args.username
-    
-    # Ask for user token
-    if not (args.token):
-        printPurple("Please enter your Github access token:", end='')
-        if (configToken != ""):
-            printGreen(" (default '%s') " % (configToken))
-        else:
-            printBlue(" no default found)")
-        inputToken = input()
-        if (inputToken == ""):
-            if (configToken == ""):
-                raise NoTokenError
-            else:
-                token = configToken
-        else:
-            token = inputToken
-    else:
-        token = args.token
 
-    # Lets see if it works
-    TestToken(token)
+    while(True):
+        # Ask for user token
+        if not (args.token):
+            printPurple("Please enter your Github access token:", end='')
+            if (configToken != ""):
+                printGreen(" (default '%s') " % (configToken))
+            else:
+                printBlue(" no default found)")
+            inputToken = input()
+            if (inputToken == ""):
+                if (configToken == ""):
+                    raise NoTokenError
+                else:
+                    token = configToken
+            else:
+                token = inputToken
+        else:
+            token = args.token
+
+        # Test token and get Username
+        printBlue("Checking that the token works")
+        username = TestToken(token)
+        printGreen("%s Seems to work" % Emojis.thumbs_up)
+        printBlue("Please verify that ", end='')
+        printYellow(username, end='')
+        printBlue(" is your Github username", end='')
+        res = input(("%s (y/n)\n") % (TextColor.green))
+        if (res == "y" or res == "Y"):
+            break;
+
     # Ask for user email    
     if not (args.email):
         printPurple("Please enter your Github email address:", end='')

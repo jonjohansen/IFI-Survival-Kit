@@ -5,11 +5,12 @@ from .textcolor import TextColor, printBlue, printYellow
 from .emojis import Emojis
 
 def TestToken(token):
-    url = 'https://api.github.com?access_token=%s' % token
+    '''Tests the token and returns the Username if working'''
+    url = 'https://api.github.com/user?access_token=%s' % token
     import requests
     res = requests.get(url)
     if res.status_code == 200:
-        return True
+        return res.json()['login']
     else:
         raise BadCredentialError
 
