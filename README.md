@@ -27,20 +27,23 @@ The script also creates an additional resource folder by default, such as report
 # Requirements
 * Python 3.5 *(or higher)*
 * [requests](http://docs.python-requests.org/en/master/) *(script will prompt to install if not found)*
+* A [Github access token](https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line) with **repo** permissions.
+
 # Usage
 Run the script with `./script.py`.
 The script will then prompt the user for all the required parameters.
+
 ### Parameters
 * `-h, --help` Help menu
-* `-u <USERNAME>, --username <USERNAME>` Github username
 * `-t <TOKEN>, --token <TOKEN>` Github access token
-* `-e <EMAIL>, --email <EMAIL>` Github email (Used for commits)
+* `-e <EMAIL>, --email <EMAIL>` Github email (Used for signing commits)
 * `-c <PATH>, --config <PATH>` Path to config file *(defaults to [structure.json](structure.json))*
 
 # Customization
-#### Beforehand
-Make changes to the [`structure.json`](structure.json) to suit your needs before running the script.
-#### Add a new repository to the structure
+### Before running the script
+Make changes to the [`structure.json`](structure.json) to suit your needs before running the script.<br>
+**Note:** It can be smart to check [`structure.json`](structure.json) to make sure it suits your personal needs.
+### Afterwards
 This script does not account for the optional courses, and any other kinds of repositories. If you want these in the structure you can follow these steps:
 
 1. To add a repository to the structure, [create](https://github.com/new) a repository as usual. [(Guide)](https://help.github.com/en/articles/create-a-repo)
@@ -48,8 +51,8 @@ This script does not account for the optional courses, and any other kinds of re
 3. Use the command `git submodule add <URL>`
 4. Commit the newly added submodule within the parent repository
 
-#### Converting all the submodules to ssh
-As of right now, this option is **not** featured within the script. Such a tool could possibly be made, but for now manual labor is required.
+### Converting all the submodules to ssh
+As of right now, this option is **not** featured within the script. Such a tool could possibly be made, but for now manual labor is required. see [#6](./issues/6) for status.
 
 # Disclaimer
 We do not take any responsibility for anything. You use the script at your own discretion, and it is recommended that you understand how it works. If you have any questions, submit these as **issues**
