@@ -89,11 +89,13 @@ def createRepository(name, description, user, auto_init=True):
 def removeCredentials(user):
     ''' Removes token from the path added by submodules '''
     if os.path.isfile('.gitmodules'):
-        # MacOS actually requires you to pass an emptystring to -i with sed
-        # to not create a file. We'll just delete it if it exists
-        cmd = ("sed -i -e 's/%s//g' .gitmodules && rm .gitmodules-e") % (user.token+'@')
+        cmd = ("sed -i -e 's/%s//g' .gitmodules") % (user.token+'@')
         proc = subprocess.Popen(cmd, shell=True)
         proc.wait()
+        # MacOS actually requires you to pass an emptystring to -i with sed
+        # to not create a file. We'll just delete it if it exists
+        if os.path.isfile('.gitmodules-e'):
+            os.remove('.gitmodules-e')
 
 def addRemote(remote):
     ''' Simply wraps "git remote add origin"'''
