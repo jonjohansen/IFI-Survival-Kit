@@ -3,17 +3,21 @@ import os
 import os.path
 from os.path import expanduser
 
-#Returns True if path is a repository, and False if not.
 def is_git_repo(path):
+    ''' 
+        Takes a path to a directory and returns a boolean representing 
+        if the given directory is a git repository
+    '''
     try:
         _ = git.Repo(path).git_dir
         return True
     except git.exc.InvalidGitRepositoryError:
         return False
 
-#Changes remote url from HTTPS to SSH for all repositories inside a main repository
 def change_url(path, user):
-    
+    '''
+        Recursively changes remote url from HTTPS to SSH for all repositories within the given path
+    '''
     os.chdir(path)
     if is_git_repo(os.getcwd()) == True:
         #Gets name of current folder
@@ -40,16 +44,17 @@ def change_url(path, user):
     #Change directory to home 
     os.chdir(expanduser("~"))
 
-#Gets github-username and starting directory from user
 def user_input():
-    
+    '''
+        Gets github-username and starting directory from user
+    '''
     while True:
         user = input("Enter your github-username: ")
         user_check = input(("Are you sure your username is '%s'? (y/n): ") % (user))
         if (user_check == "n" or user_check == "N"):
             print("Try again") 
         elif (user_check == "y" or user_check == "Y"):
-            break;
+            break
             
     while True:
         path = input("Enter name of starting directory: ")
@@ -58,11 +63,12 @@ def user_input():
         else:
             break
         
-    return path, user; 
+    return path, user
 
-#Deletes .gitmodules in every repository and creates a new .gitmodules with url = ssh
 def change_gitmodules(path, user):
-    
+    '''
+        Deletes .gitmodules in every repository and creates a new .gitmodules with url in ssh format
+    '''
     submodules = []
     os.chdir(path)
     folder = (os.path.basename(os.getcwd()))
