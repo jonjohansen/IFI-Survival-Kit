@@ -1,4 +1,3 @@
-import git
 import os
 import os.path
 from os.path import expanduser
@@ -8,18 +7,18 @@ def is_git_repo(path):
         Takes a path to a directory and returns a boolean representing 
         if the given directory is a git repository
     '''
-    try:
-        _ = git.Repo(path).git_dir
-        return True
-    except git.exc.InvalidGitRepositoryError:
+    if os.path.isfile(path):
+        # Handle paths leading to files first
         return False
+
+    return '.git' in os.listdir(path)
 
 def change_url(path, user):
     '''
         Recursively changes remote url from HTTPS to SSH for all repositories within the given path
     '''
     os.chdir(path)
-    if is_git_repo(os.getcwd()) == True:
+    if (is_git_repo(os.getcwd())):
         #Gets name of current folder
         foldername = os.path.basename(os.getcwd())
         url = ("git@github.com:%s/%s.git") % (user, foldername)
